@@ -16,15 +16,23 @@
   .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
   header.top{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;padding:26px 0 30px;position:relative;overflow:hidden}
   header.top::after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(201,162,39,.25),transparent 70%)}
-  .brand{display:flex;align-items:center;gap:16px;position:relative;z-index:2}
+  .header-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand-right{display:flex;align-items:center;gap:12px;text-align:right}
   .logo{width:74px;height:74px;flex:0 0 74px;display:flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.35)}
   .logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .logo-pa{width:74px;height:74px;flex:0 0 74px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+  .logo-pa img{width:100%;height:100%;object-fit:contain;display:block;padding:6px}
+  .logo-pa .pa-fb{font-family:Georgia,serif;font-weight:800;color:var(--navy);font-size:26px;letter-spacing:-1px}
   .brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.3px}
   .brand p{margin:2px 0 0;font-size:12.5px;color:#bcd0e6;letter-spacing:.4px;text-transform:uppercase}
-  .tagline{margin-top:18px;position:relative;z-index:2}
+  .brand-right h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.3px;color:#fff}
+  .brand-right p{margin:2px 0 0;font-size:11.5px;color:#bcd0e6;letter-spacing:.4px;text-transform:uppercase}
+  .tagline{margin-top:22px;position:relative;z-index:2;text-align:center}
   .tagline h2{font-size:25px;margin:0;font-weight:700}
   .tagline span{color:var(--gold-2)}
-  .tagline p{margin:6px 0 0;color:#cfe0f0;font-size:14px;max-width:560px}
+  .tagline p{margin:6px auto 0;color:#cfe0f0;font-size:14px;max-width:600px}
+  @media(max-width:600px){.brand-right{display:none}}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:-18px 0 30px;position:relative;z-index:3}
   @media(max-width:860px){.grid{grid-template-columns:1fr}}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
@@ -65,6 +73,7 @@
 
 <header class="top">
   <div class="wrap">
+    <div class="header-row">
     <div class="brand">
       <!-- A logo real aparece automaticamente quando você salvar o arquivo "logo.png" nesta mesma pasta.
            Enquanto não houver logo.png, mostra o medalhão vetorial abaixo. -->
@@ -92,6 +101,18 @@
         <p>Empréstimos · Imóveis · Previdenciário</p>
       </div>
     </div>
+    <div class="brand-right">
+      <div>
+        <h1>PA Costa e Serviços</h1>
+        <p>Crédito Imobiliário</p>
+      </div>
+      <!-- Logo da PA: salve o arquivo "logo-pa.png" nesta pasta. Sem ele, mostra "PA". -->
+      <div class="logo-pa">
+        <img src="logo-pa.png" alt="PA Costa e Serviços" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="pa-fb" style="display:none">PA</span>
+      </div>
+    </div>
+    </div><!-- /header-row -->
     <div class="tagline">
       <h2>Calculadora de <span>ITBI e Cartório</span></h2>
       <p>Simule os custos de aquisição do imóvel com valores oficiais — Emolumentos TJMA 2026 e ITBI de São Luís/MA.</p>
@@ -212,8 +233,13 @@
 
 <footer>
   <b>A&amp;Z Assessoria</b> — Empréstimos Consignados · Financiamento de Imóveis · Assessoria Previdenciária<br>
+  <b>PA Costa e Serviços</b> — Crédito Imobiliário<br>
   <span style="display:inline-block;margin-top:8px">📍 Avenida dos Holandeses, 144 — Edifício Century Multiempresarial, Sala 1002</span><br>
-  <a href="https://wa.me/5598984081793" target="_blank" style="display:inline-block;margin-top:6px;color:var(--ok);font-weight:700;text-decoration:none">📱 WhatsApp: (98) 98408-1793</a><br>
+  <span style="display:inline-block;margin-top:6px">
+    <a href="https://wa.me/5598984081793" target="_blank" style="color:var(--ok);font-weight:700;text-decoration:none">📱 (98) 98408-1793</a>
+    &nbsp;·&nbsp;
+    <a href="https://wa.me/5598991005677" target="_blank" style="color:var(--ok);font-weight:700;text-decoration:none">📱 (98) 99100-5677</a>
+  </span><br>
   <span class="src" style="display:inline-block;margin-top:10px">Fonte dos emolumentos: <a href="https://www.tjma.jus.br" target="_blank">TJMA — Tabela de Emolumentos 2026 (Tabela XVI)</a> · ITBI São Luís/MA</span>
 </footer>
 
@@ -300,33 +326,4 @@ function calc(){
   document.getElementById('cartVenda').textContent=BRL(cartVenda);
   document.getElementById('cartFin').textContent=BRL(cartFin);
   document.getElementById('cartFinRow').style.opacity=(financiado>0)?1:.45;
-  document.getElementById('cartPre').textContent=BRL(pre);
-  document.getElementById('cartAverb').textContent=BRL(averb);
-  document.getElementById('cartBaixa').textContent=BRL(baixa);
-  document.getElementById('cartCanc').textContent=BRL(canc);
-  document.getElementById('cartTotal').textContent=BRL(cartTotal);
-  document.getElementById('totalGeral').textContent=BRL(totalGeral);
-
-  last={venda,financiado,itbiTotal,cartTotal,totalGeral,enqKey:document.getElementById('enquadramento').value};
-}
-calc();
-
-document.getElementById('btnWhats').addEventListener('click',()=>{
-  const emp=document.getElementById('empreendimento').value,bloco=document.getElementById('bloco').value,un=document.getElementById('unidade').value,cli=document.getElementById('cliente').value;
-  const enqLbl=document.querySelector('#enquadramento option:checked').textContent;
-  let t=`*A&Z Assessoria — Simulação ITBI e Cartório*%0A%0A`;
-  if(cli) t+=`👤 Cliente: ${cli}%0A`;
-  if(emp) t+=`🏢 ${emp}${bloco?' · '+bloco:''}${un?' · Un. '+un:''}%0A`;
-  t+=`🏠 Compra e venda: ${BRL(last.venda)}%0A`;
-  if(last.financiado>0) t+=`🏦 Financiado: ${BRL(last.financiado)}%0A`;
-  t+=`📋 ${enqLbl}%0A%0A`;
-  t+=`*ITBI:* ${last.itbiTotal===0?'Isento':BRL(last.itbiTotal)}%0A`;
-  t+=`*Cartório:* ${last.cartTotal===0?'Isento':BRL(last.cartTotal)}%0A`;
-  t+=`*TOTAL ESTIMADO: ${BRL(last.totalGeral)}*%0A%0A`;
-  t+=`_Valores de conferência (TJMA 2026 / ITBI São Luís). Sujeitos a alteração._`;
-  window.open(`https://wa.me/?text=${t}`,'_blank');
-});
-document.getElementById('btnPrint').addEventListener('click',()=>window.print());
-</script>
-</body>
-</html>
+  document.getElementById('ca
