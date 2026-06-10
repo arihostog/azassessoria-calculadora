@@ -243,13 +243,16 @@
   <span class="src" style="display:inline-block;margin-top:10px">Fonte dos emolumentos: <a href="https://www.tjma.jus.br" target="_blank">TJMA — Tabela de Emolumentos 2026 (Tabela XVI)</a> · ITBI São Luís/MA</span>
 </footer>
 
+<!-- Tabela de emolumentos/ITBI em arquivo separado (editar 1x por ano: emolumentos.js) -->
+<script src="emolumentos.js"></script>
 <script>
-/* ===== Emolumentos TJMA 2026 — TABELA XVI, item 16.3 (Registro de atos com valor declarado, coluna TOTAL) =====
-   Aplica-se ao registro de compra e venda e ao registro do financiamento (alienação fiduciária),
-   tomando como base, respectivamente, o valor do imóvel e o valor financiado.
-   Teto geral (art. 37): R$ 21.380,93 de emolumentos → R$ 23.946,65 no total (item 16.3.36). */
-const FAIXAS = [5917.36,7692.57,9615.72,12019.65,15024.56,18780.69,23475.86,29344.81,36681.02,45851.29,57314.07,71642.58,89553.26,111941.56,139926.94,174908.66,218635.83,273294.81,341618.50,427023.14,533778.91,667223.64,834029.56,1042536.94,1303171.21,1563805.44,1876566.51,2251879.82,2702255.82,3242706.98,3891248.37,4669498.05,5603397.67,6724077.19,8068892.63,Infinity];
-const TOTAL16 = [111.11,140.01,158.55,196.77,244.66,306.77,384.85,481.65,599.84,750.69,939.28,1173.09,1466.33,1832.33,2289.78,2862.74,3578.55,4474.29,5590.81,6989.72,8736.26,10920.44,13651.34,16209.99,17299.63,17818.55,18353.16,18903.80,19470.93,20055.05,20656.61,21276.39,21914.57,22572.09,23249.22,23946.65];
+/* ===== Tabela de emolumentos vinda de emolumentos.js (TJMA, item 16.3) =====
+   Aplica-se ao registro de compra e venda e ao registro do financiamento (alienação fiduciária).
+   Para atualizar os valores a cada ano, edite o arquivo emolumentos.js. */
+var EMOL = window.EMOL || { faixas:[Infinity], totais:[0], prenotacao:43.37, itbi:{reduzida:0.005,padrao:0.02,tetoFinanciado:500000} };
+const FAIXAS = EMOL.faixas;
+const TOTAL16 = EMOL.totais;
+(function(){var p=document.getElementById('prenotacao'); if(p) p.value=EMOL.prenotacao.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});})();
 
 function emolumento(valor){
   if(valor<=0) return 0;
@@ -300,11 +303,11 @@ function calc(){
   const enq=ENQ[document.getElementById('enquadramento').value];
   document.getElementById('enqNote').textContent=enq.nota;
 
-  // ITBI São Luís: 0,5% sobre financiado (até 500k) + 2% sobre o restante
-  const baseReduzida=Math.min(financiado,500000);
-  const baseExcedente=Math.max(financiado-500000,0);
-  let itbiFin=baseReduzida*0.005*enq.itbi;
-  let itbiProp=(proprios+baseExcedente)*0.02*enq.itbi;
+  // ITBI São Luís: alíquotas vindas de emolumentos.js
+  const baseReduzida=Math.min(financiado,EMOL.itbi.tetoFinanciado);
+  const baseExcedente=Math.max(financiado-EMOL.itbi.tetoFinanciado,0);
+  let itbiFin=baseReduzida*EMOL.itbi.reduzida*enq.itbi;
+  let itbiProp=(proprios+baseExcedente)*EMOL.itbi.padrao*enq.itbi;
   const itbiTotal=itbiFin+itbiProp;
 
   // Cartório
