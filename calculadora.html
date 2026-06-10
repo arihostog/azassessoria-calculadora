@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A&Z Assessoria — Calculadora de ITBI e Cartório</title>
+<meta name="description" content="Calculadora de ITBI e custos de cartório (emolumentos TJMA 2026) — A&Z Assessoria.">
+<style>
+  :root{
+    --navy:#0c2c4e;--navy-2:#103a66;--gold:#c9a227;--gold-2:#e0bf4d;
+    --ink:#1b2733;--muted:#6b7a8d;--line:#e7ecf2;--bg:#f4f7fb;--card:#ffffff;
+    --ok:#1f8a52;--soft:#eef3f9;--radius:16px;--shadow:0 10px 30px rgba(12,44,78,.08);
+  }
+  *{box-sizing:border-box}html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+  header.top{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;padding:26px 0 30px;position:relative;overflow:hidden}
+  header.top::after{content:"";position:absolute;right:-80px;top:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(201,162,39,.25),transparent 70%)}
+  .header-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;position:relative;z-index:2}
+  .brand{display:flex;align-items:center;gap:16px}
+  .brand-right{display:flex;align-items:center;gap:12px;text-align:right}
+  .logo{width:74px;height:74px;flex:0 0 74px;display:flex;align-items:center;justify-content:center;border-radius:50%;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .logo img{width:100%;height:100%;object-fit:cover;display:block}
+  .logo-pa{width:74px;height:74px;flex:0 0 74px;border-radius:14px;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+  .logo-pa img{width:100%;height:100%;object-fit:contain;display:block;padding:6px}
+  .logo-pa .pa-fb{font-family:Georgia,serif;font-weight:800;color:var(--navy);font-size:26px;letter-spacing:-1px}
+  .brand h1{font-size:20px;margin:0;font-weight:700;letter-spacing:.3px}
+  .brand p{margin:2px 0 0;font-size:12.5px;color:#bcd0e6;letter-spacing:.4px;text-transform:uppercase}
+  .brand-right h1{font-size:17px;margin:0;font-weight:700;letter-spacing:.3px;color:#fff}
+  .brand-right p{margin:2px 0 0;font-size:11.5px;color:#bcd0e6;letter-spacing:.4px;text-transform:uppercase}
+  .tagline{margin-top:22px;position:relative;z-index:2;text-align:center}
+  .tagline h2{font-size:25px;margin:0;font-weight:700}
+  .tagline span{color:var(--gold-2)}
+  .tagline p{margin:6px auto 0;color:#cfe0f0;font-size:14px;max-width:600px}
+  @media(max-width:600px){.brand-right{display:none}}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:-18px 0 30px;position:relative;z-index:3}
+  @media(max-width:860px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .card h3{margin:0 0 4px;font-size:16px;color:var(--navy)}
+  .card .sub{margin:0 0 18px;font-size:12.5px;color:var(--muted)}
+  label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin:14px 0 6px}
+  .hint{font-weight:400;color:var(--muted)}
+  input,select{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:11px;font-size:15px;color:var(--ink);background:#fff;transition:border .15s,box-shadow .15s}
+  input:focus,select:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.15)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toggle{display:flex;gap:8px;margin-top:8px}
+  .toggle button{flex:1;padding:11px;border:1.5px solid var(--line);background:#fff;border-radius:11px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:.15s}
+  .toggle button.active{background:var(--navy);border-color:var(--navy);color:#fff}
+  .result-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .badge{font-size:11px;background:var(--soft);color:var(--navy);padding:5px 10px;border-radius:20px;font-weight:700}
+  .total-box{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;border-radius:14px;padding:20px;margin:6px 0 18px;text-align:center}
+  .total-box .lbl{font-size:12px;color:#bcd0e6;text-transform:uppercase;letter-spacing:.6px}
+  .total-box .val{font-size:34px;font-weight:800;margin-top:4px;color:#fff}
+  table.lines{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  table.lines td{padding:9px 0;border-bottom:1px dashed var(--line)}
+  table.lines td.r{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+  table.lines tr.group td{padding-top:16px;color:var(--navy);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.4px;border-bottom:1.5px solid var(--navy)}
+  table.lines tr.sum td{font-weight:800;color:var(--navy);border-bottom:2px solid var(--navy)}
+  table.lines td.muted{color:var(--muted);font-weight:400}
+  .isento{color:var(--ok);font-weight:700}
+  .actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .btn{flex:1;min-width:140px;padding:13px;border-radius:12px;border:none;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s}
+  .btn.primary{background:#25D366;color:#fff}.btn.primary:hover{background:#1ebe5a}
+  .btn.ghost{background:var(--soft);color:var(--navy)}.btn.ghost:hover{background:#e2eaf4}
+  .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5;background:#fff8e6;padding:11px 13px;border-radius:10px;border-left:3px solid var(--gold)}
+  .obs{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.5;background:var(--soft);padding:14px;border-radius:11px;border-left:3px solid var(--gold)}
+  footer{text-align:center;padding:26px 18px 40px;color:var(--muted);font-size:12.5px}
+  footer b{color:var(--navy)}.src{font-size:11px}.src a{color:var(--muted)}
+  @media print{header.top{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.card.input-card,.actions{display:none}.grid{grid-template-columns:1fr;margin-top:10px}.total-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="header-row">
+    <div class="brand">
+      <!-- A logo real aparece automaticamente quando você salvar o arquivo "logo.png" nesta mesma pasta.
+           Enquanto não houver logo.png, mostra o medalhão vetorial abaixo. -->
+      <div class="logo" id="logo">
+        <img src="logo.png" alt="A&Z Assessoria" onerror="this.style.display='none';document.getElementById('logoSvg').style.display='block';">
+        <svg id="logoSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:none;width:100%;height:100%">
+          <defs>
+            <radialGradient id="bg" cx="50%" cy="38%" r="70%">
+              <stop offset="0%" stop-color="#2b2b2b"/><stop offset="100%" stop-color="#0a0a0a"/>
+            </radialGradient>
+            <linearGradient id="au" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f6e7a8"/><stop offset="45%" stop-color="#d8b24a"/>
+              <stop offset="55%" stop-color="#b8862f"/><stop offset="100%" stop-color="#f0d27a"/>
+            </linearGradient>
+          </defs>
+          <circle cx="50" cy="50" r="49" fill="url(#bg)"/>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="url(#au)" stroke-width="2.4"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#au)" stroke-width="0.8" opacity="0.7"/>
+          <text x="50" y="52" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="30" font-weight="700" fill="url(#au)" letter-spacing="-1">A&amp;Z</text>
+          <text x="50" y="68" text-anchor="middle" font-family="Georgia,serif" font-size="8.2" font-weight="600" fill="url(#au)" letter-spacing="2.5">ASSESSORIA</text>
+        </svg>
+      </div>
+      <div>
+        <h1>A&amp;Z Assessoria</h1>
+        <p>Empréstimos · Imóveis · Previdenciário</p>
+      </div>
+    </div>
+    <div class="brand-right">
+      <div>
+        <h1>PA Costa e Serviços</h1>
+        <p>Crédito Imobiliário</p>
+      </div>
+      <!-- Logo da PA: salve o arquivo "logo-pa.png" nesta pasta. Sem ele, mostra "PA". -->
+      <div class="logo-pa">
+        <img src="logo-pa.png" alt="PA Costa e Serviços" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <span class="pa-fb" style="display:none">PA</span>
+      </div>
+    </div>
+    </div><!-- /header-row -->
+    <div class="tagline">
+      <h2>Calculadora de <span>ITBI e Cartório</span></h2>
+      <p>Simule os custos de aquisição do imóvel com valores oficiais — Emolumentos TJMA 2026 e ITBI de São Luís/MA.</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- INPUT -->
+    <div class="card input-card">
+      <h3>Dados da operação</h3>
+      <p class="sub">Preencha os valores para gerar a simulação.</p>
+
+      <label>Empreendimento <span class="hint">(digitação livre)</span></label>
+      <input id="empreendimento" type="text" placeholder="Ex.: Jardim Andaluzia">
+
+      <div class="row">
+        <div>
+          <label>Bloco/Torre <span class="hint">(opcional)</span></label>
+          <input id="bloco" type="text" placeholder="Ex.: Torre A">
+        </div>
+        <div>
+          <label>Unidade <span class="hint">(opcional)</span></label>
+          <input id="unidade" type="text" placeholder="Ex.: 501">
+        </div>
+      </div>
+
+      <label>Cliente <span class="hint">(opcional)</span></label>
+      <input id="cliente" type="text" placeholder="Nome do cliente">
+
+      <label>Valor de compra e venda (R$)</label>
+      <input id="valorVenda" type="text" inputmode="decimal" placeholder="160.000,00">
+
+      <label>Forma de pagamento</label>
+      <div class="toggle" id="tipoFin">
+        <button data-v="financiado" class="active">Financiado</button>
+        <button data-v="avista">À vista</button>
+      </div>
+
+      <div id="financBlock">
+        <label>Valor financiado (R$)</label>
+        <input id="valorFinanciado" type="text" inputmode="decimal" placeholder="80.000,00">
+      </div>
+
+      <label>Enquadramento</label>
+      <select id="enquadramento">
+        <option value="primeira">1ª Aquisição — SFH (−50% emolumentos)</option>
+        <option value="mcmv1">Minha Casa Minha Vida — Faixa 1 / Interesse Social</option>
+        <option value="mcmv23">Minha Casa Minha Vida — Faixa 2 e 3</option>
+        <option value="integral">Valor integral (sem redução)</option>
+      </select>
+      <div class="note" id="enqNote"></div>
+
+      <label style="margin-top:14px">Taxas adicionais de cartório <span class="hint">(editável)</span></label>
+      <div class="row">
+        <div>
+          <label class="hint" style="margin-top:4px">Prenotação (R$)</label>
+          <input id="prenotacao" type="text" inputmode="decimal" value="43,37">
+        </div>
+        <div>
+          <label class="hint" style="margin-top:4px">Averbações/Matrícula (R$)</label>
+          <input id="averbacoes" type="text" inputmode="decimal" value="0,00">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label class="hint" style="margin-top:4px">Baixa de hipoteca (R$)</label>
+          <input id="baixaHipoteca" type="text" inputmode="decimal" value="0,00">
+        </div>
+        <div>
+          <label class="hint" style="margin-top:4px">Cancelamento de ônus (R$)</label>
+          <input id="cancelamento" type="text" inputmode="decimal" value="0,00">
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="card">
+      <div class="result-head">
+        <h3 style="margin:0">Resultado da simulação</h3>
+        <span class="badge">Base TJMA 2026</span>
+      </div>
+
+      <div class="total-box">
+        <div class="lbl">Total estimado (ITBI + Cartório)</div>
+        <div class="val" id="totalGeral">R$ 0,00</div>
+      </div>
+
+      <table class="lines">
+        <tr class="group"><td colspan="2">ITBI — Imposto de Transmissão</td></tr>
+        <tr><td class="muted" id="itbiFinLbl">Parcela financiada · 0,5%</td><td class="r" id="itbiFin">R$ 0,00</td></tr>
+        <tr><td class="muted" id="itbiPropLbl">Recursos próprios / à vista · 2%</td><td class="r" id="itbiProp">R$ 0,00</td></tr>
+        <tr class="sum"><td>Total do ITBI</td><td class="r" id="itbiTotal">R$ 0,00</td></tr>
+
+        <tr class="group"><td colspan="2">Cartório — Registro de Imóveis</td></tr>
+        <tr><td class="muted">Registro de compra e venda</td><td class="r" id="cartVenda">R$ 0,00</td></tr>
+        <tr><td class="muted" id="cartFinRow">Registro do financiamento</td><td class="r" id="cartFin">R$ 0,00</td></tr>
+        <tr><td class="muted">Prenotação</td><td class="r" id="cartPre">R$ 0,00</td></tr>
+        <tr><td class="muted">Averbações / Matrícula</td><td class="r" id="cartAverb">R$ 0,00</td></tr>
+        <tr><td class="muted">Baixa de hipoteca</td><td class="r" id="cartBaixa">R$ 0,00</td></tr>
+        <tr><td class="muted">Cancelamento de ônus</td><td class="r" id="cartCanc">R$ 0,00</td></tr>
+        <tr class="sum"><td>Total do Cartório</td><td class="r" id="cartTotal">R$ 0,00</td></tr>
+      </table>
+
+      <div class="actions">
+        <button class="btn primary" id="btnWhats">Enviar no WhatsApp</button>
+        <button class="btn ghost" id="btnPrint">Salvar / Imprimir PDF</button>
+      </div>
+
+      <div class="obs">
+        <b>Observação:</b> valores detalhados para conferência, podendo ser alterados a qualquer momento sem prévio aviso (e sendo devida eventual diferença). Maiores detalhes devem ser verificados diretamente com os órgãos responsáveis (Prefeitura e Cartório de Registro de Imóveis). Emolumentos conforme Tabela TJMA 2026 (Resolução-GP nº 143/2025, Lei Estadual nº 9.109/2009). ITBI conforme legislação do município de São Luís/MA.
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <b>A&amp;Z Assessoria</b> — Empréstimos Consignados · Financiamento de Imóveis · Assessoria Previdenciária<br>
+  <b>PA Costa e Serviços</b> — Crédito Imobiliário<br>
+  <span style="display:inline-block;margin-top:8px">📍 Avenida dos Holandeses, 144 — Edifício Century Multiempresarial, Sala 1002</span><br>
+  <span style="display:inline-block;margin-top:6px">
+    <a href="https://wa.me/5598984081793" target="_blank" style="color:var(--ok);font-weight:700;text-decoration:none">📱 (98) 98408-1793</a>
+    &nbsp;·&nbsp;
+    <a href="https://wa.me/5598991005677" target="_blank" style="color:var(--ok);font-weight:700;text-decoration:none">📱 (98) 99100-5677</a>
+  </span><br>
+  <span class="src" style="display:inline-block;margin-top:10px">Fonte dos emolumentos: <a href="https://www.tjma.jus.br" target="_blank">TJMA — Tabela de Emolumentos 2026 (Tabela XVI)</a> · ITBI São Luís/MA</span>
+</footer>
+
+<script>
+/* ===== Emolumentos TJMA 2026 — TABELA XVI, item 16.3 (Registro de atos com valor declarado, coluna TOTAL) =====
+   Aplica-se ao registro de compra e venda e ao registro do financiamento (alienação fiduciária),
+   tomando como base, respectivamente, o valor do imóvel e o valor financiado.
+   Teto geral (art. 37): R$ 21.380,93 de emolumentos → R$ 23.946,65 no total (item 16.3.36). */
+const FAIXAS = [5917.36,7692.57,9615.72,12019.65,15024.56,18780.69,23475.86,29344.81,36681.02,45851.29,57314.07,71642.58,89553.26,111941.56,139926.94,174908.66,218635.83,273294.81,341618.50,427023.14,533778.91,667223.64,834029.56,1042536.94,1303171.21,1563805.44,1876566.51,2251879.82,2702255.82,3242706.98,3891248.37,4669498.05,5603397.67,6724077.19,8068892.63,Infinity];
+const TOTAL16 = [111.11,140.01,158.55,196.77,244.66,306.77,384.85,481.65,599.84,750.69,939.28,1173.09,1466.33,1832.33,2289.78,2862.74,3578.55,4474.29,5590.81,6989.72,8736.26,10920.44,13651.34,16209.99,17299.63,17818.55,18353.16,18903.80,19470.93,20055.05,20656.61,21276.39,21914.57,22572.09,23249.22,23946.65];
+
+function emolumento(valor){
+  if(valor<=0) return 0;
+  for(let i=0;i<FAIXAS.length;i++){ if(valor<=FAIXAS[i]) return TOTAL16[i]; }
+  return TOTAL16[TOTAL16.length-1];
+}
+
+/* ===== Enquadramentos ===== */
+const ENQ = {
+  primeira:{ emol:0.5, itbi:1, isento:false, nota:'1ª aquisição residencial financiada pelo SFH: emolumentos reduzidos em 50% (art. 290 da Lei 6.015/73). ITBI calculado normalmente.' },
+  mcmv1:{ emol:0, itbi:0, isento:true, nota:'MCMV Faixa 1 / interesse social: isenção de ITBI (São Luís) e isenção/redução máxima de emolumentos. Confirme o enquadramento do cliente junto ao agente financeiro e à Prefeitura.' },
+  mcmv23:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 2 e 3: tratado como 1ª aquisição SFH (−50% emolumentos). Conforme a renda, o agente financeiro pode aplicar descontos adicionais de cartório — confirme no contrato.' },
+  integral:{ emol:1, itbi:1, isento:false, nota:'Valor integral, sem redução legal de emolumentos. Use para 2ª aquisição, imóvel não residencial ou compra sem financiamento SFH.' }
+};
+
+/* ===== Helpers ===== */
+const BRL = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function parseBR(str){
+  if(!str) return 0;
+  str=(''+str).replace(/[^\d,.-]/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');
+  const n=parseFloat(str); return isNaN(n)?0:n;
+}
+function maskMoney(el){
+  el.addEventListener('blur',()=>{ if(el.value.trim()!==''){ el.value=parseBR(el.value).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); } calc(); });
+  el.addEventListener('input',calc);
+}
+
+let tipo='financiado';
+document.querySelectorAll('#tipoFin button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('#tipoFin button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); tipo=b.dataset.v;
+    document.getElementById('financBlock').style.display=(tipo==='avista')?'none':'block';
+    calc();
+  });
+});
+document.getElementById('enquadramento').addEventListener('change',calc);
+['valorVenda','valorFinanciado','prenotacao','averbacoes','baixaHipoteca','cancelamento'].forEach(id=>maskMoney(document.getElementById(id)));
+['empreendimento','bloco','unidade','cliente'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+
+let last={};
+function calc(){
+  const venda=parseBR(document.getElementById('valorVenda').value);
+  let financiado=(tipo==='avista')?0:parseBR(document.getElementById('valorFinanciado').value);
+  if(financiado>venda) financiado=venda;
+  const proprios=Math.max(venda-financiado,0);
+
+  const enq=ENQ[document.getElementById('enquadramento').value];
+  document.getElementById('enqNote').textContent=enq.nota;
+
+  // ITBI São Luís: 0,5% sobre financiado (até 500k) + 2% sobre o restante
+  const baseReduzida=Math.min(financiado,500000);
+  const baseExcedente=Math.max(financiado-500000,0);
+  let itbiFin=baseReduzida*0.005*enq.itbi;
+  let itbiProp=(proprios+baseExcedente)*0.02*enq.itbi;
+  const itbiTotal=itbiFin+itbiProp;
+
+  // Cartório
+  const cartVenda=emolumento(venda)*enq.emol;
+  const cartFin=(financiado>0)?emolumento(financiado)*enq.emol:0;
+  const pre=parseBR(document.getElementById('prenotacao').value)*enq.emol;
+  const averb=parseBR(document.getElementById('averbacoes').value)*enq.emol;
+  const baixa=parseBR(document.getElementById('baixaHipoteca').value)*enq.emol;
+  const canc=parseBR(document.getElementById('cancelamento').value)*enq.emol;
+  const cartTotal=cartVenda+cartFin+pre+averb+baixa+canc;
+  const totalGeral=itbiTotal+cartTotal;
+
+  const fmt=(v,el)=>{ const e=document.getElementById(el); if(v===0&&enq.isento){e.innerHTML='<span class="isento">Isento</span>';} else {e.textContent=BRL(v);} };
+
+  document.getElementById('itbiFinLbl').textContent=`Parcela financiada · 0,5% (${BRL(baseReduzida)})`;
+  document.getElementById('itbiPropLbl').textContent=`Recursos próprios / à vista · 2% (${BRL(proprios+baseExcedente)})`;
+  fmt(itbiFin,'itbiFin'); fmt(itbiProp,'itbiProp'); fmt(itbiTotal,'itbiTotal');
+
+  document.getElementById('cartVenda').textContent=BRL(cartVenda);
+  document.getElementById('cartFin').textContent=BRL(cartFin);
+  document.getElementById('cartFinRow').style.opacity=(financiado>0)?1:.45;
+  document.getElementById('ca
