@@ -41,11 +41,12 @@
   .tagline span{color:var(--gold-2)}
   .tagline p{margin:6px auto 0;color:#cfe0f0;font-size:14px;max-width:600px}
   @media(max-width:600px){
-    .header-row{flex-direction:column;align-items:center;gap:14px}
-    .brand,.brand-right{justify-content:center}
-    .brand-right{text-align:center;flex-direction:row-reverse}
-    .logo,.logo-pa{width:60px;height:60px;flex-basis:60px}
-    .tagline{margin-top:16px}.tagline h2{font-size:22px}
+    .header-row{flex-direction:column;align-items:stretch;gap:10px}
+    .brand,.brand-right{flex-direction:row;justify-content:flex-start;align-items:center;text-align:left;gap:12px;width:100%}
+    .logo,.logo-pa{width:52px;height:52px;flex-basis:52px}
+    .brand h1,.brand-right h1{font-size:17px;color:#fff}
+    .brand p,.brand-right p{font-size:11px}
+    .tagline{margin-top:14px}.tagline h2{font-size:21px}
   }
   /* Campos de valor em destaque */
   .keybox{background:#fff9e9;border:1px solid #f0e2b8;border-left:4px solid var(--gold);border-radius:12px;padding:12px 14px;margin-top:16px}
@@ -87,7 +88,27 @@
   .obs{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.5;background:var(--soft);padding:14px;border-radius:11px;border-left:3px solid var(--gold)}
   footer{text-align:center;padding:26px 18px 40px;color:var(--muted);font-size:12.5px}
   footer b{color:var(--navy)}.src{font-size:11px}.src a{color:var(--muted)}
-  @media print{header.top{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.card.input-card,.actions{display:none}.grid{grid-template-columns:1fr;margin-top:10px}.total-box{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  /* Impressão / PDF em 1 página */
+  @page{size:A4 portrait;margin:8mm}
+  @media print{
+    html,body{background:#fff}
+    body{font-size:12px}
+    header.top{background:var(--navy)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:12px 0;overflow:visible}
+    header.top::after{display:none}
+    .card.input-card,.actions,.install-hint{display:none!important}
+    .wrap{padding:0 6px}
+    .grid{grid-template-columns:1fr;margin:6px 0;gap:0}
+    .card{box-shadow:none;padding:6px 0;border:none}
+    .total-box{-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:12px;margin:4px 0 8px}
+    .total-box .val{font-size:25px}
+    .tagline{margin-top:6px}.tagline h2{font-size:20px}.tagline p{font-size:10.5px;margin-top:2px}
+    .result-head{margin-bottom:2px}
+    table.lines td{padding:4px 0;font-size:11px}
+    table.lines tr.group td{padding-top:8px}
+    .obs{font-size:8.5px;padding:7px;margin-top:8px}
+    footer{padding:8px 0 0;font-size:9px}
+    .logo,.logo-pa{width:52px;height:52px;flex-basis:52px}
+  }
 </style>
 </head>
 <body>
@@ -96,23 +117,16 @@
   <div class="wrap">
     <div class="header-row">
     <div class="brand">
-      <!-- A logo real aparece automaticamente quando você salvar o arquivo "logo.png" nesta mesma pasta. -->
       <div class="logo" id="logo">
         <img src="logo.png" alt="A&Z Assessoria" onerror="this.style.display='none';document.getElementById('logoSvg').style.display='block';">
         <svg id="logoSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:none;width:100%;height:100%">
           <defs>
-            <radialGradient id="bg" cx="50%" cy="38%" r="70%">
-              <stop offset="0%" stop-color="#2b2b2b"/><stop offset="100%" stop-color="#0a0a0a"/>
-            </radialGradient>
-            <linearGradient id="au" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f6e7a8"/><stop offset="45%" stop-color="#d8b24a"/>
-              <stop offset="55%" stop-color="#b8862f"/><stop offset="100%" stop-color="#f0d27a"/>
-            </linearGradient>
+            <radialGradient id="bg" cx="50%" cy="38%" r="70%"><stop offset="0%" stop-color="#2b2b2b"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient>
+            <linearGradient id="au" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f6e7a8"/><stop offset="45%" stop-color="#d8b24a"/><stop offset="55%" stop-color="#b8862f"/><stop offset="100%" stop-color="#f0d27a"/></linearGradient>
           </defs>
           <circle cx="50" cy="50" r="49" fill="url(#bg)"/>
           <circle cx="50" cy="50" r="46" fill="none" stroke="url(#au)" stroke-width="2.4"/>
-          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#au)" stroke-width="0.8" opacity="0.7"/>
-          <text x="50" y="52" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="30" font-weight="700" fill="url(#au)" letter-spacing="-1">A&amp;Z</text>
+          <text x="50" y="52" text-anchor="middle" font-family="Georgia,serif" font-size="30" font-weight="700" fill="url(#au)" letter-spacing="-1">A&amp;Z</text>
           <text x="50" y="68" text-anchor="middle" font-family="Georgia,serif" font-size="8.2" font-weight="600" fill="url(#au)" letter-spacing="2.5">ASSESSORIA</text>
         </svg>
       </div>
@@ -126,7 +140,6 @@
         <h1>PA Costa e Serviços</h1>
         <p>Crédito Imobiliário</p>
       </div>
-      <!-- Logo da PA: salve o arquivo "logo-pa.png" nesta pasta. Sem ele, mostra "PA". -->
       <div class="logo-pa">
         <img src="logo-pa.png" alt="PA Costa e Serviços" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
         <span class="pa-fb" style="display:none">PA</span>
@@ -276,7 +289,7 @@
 <!-- Tabela de emolumentos/ITBI em arquivo separado (editar 1x por ano: emolumentos.js) -->
 <script src="emolumentos.js"></script>
 <script>
-/* ===== Tabela de emolumentos vinda de emolumentos.js (TJMA, item 16.3) ===== */
+/* Tabela vinda de emolumentos.js (TJMA item 16.3). Para atualizar 1x por ano, edite emolumentos.js. */
 var EMOL = window.EMOL || { faixas:[Infinity], totais:[0], prenotacao:43.37, itbi:{reduzida:0.005,padrao:0.02,tetoFinanciado:500000} };
 const FAIXAS = EMOL.faixas;
 const TOTAL16 = EMOL.totais;
@@ -288,7 +301,6 @@ function emolumento(valor){
   return TOTAL16[TOTAL16.length-1];
 }
 
-/* ===== Enquadramentos ===== */
 const ENQ = {
   primeira:{ emol:0.5, itbi:1, isento:false, nota:'1ª aquisição residencial financiada pelo SFH: emolumentos reduzidos em 50% (art. 290 da Lei 6.015/73). ITBI calculado normalmente.' },
   faixa1:{ emol:0, itbi:0, isento:true, nota:'MCMV Faixa 1 (renda até R$ 3.200) — interesse social: isenção de ITBI em São Luís e isenção/redução máxima de emolumentos. Confirme o enquadramento junto ao agente financeiro e à Prefeitura.' },
@@ -298,7 +310,6 @@ const ENQ = {
   integral:{ emol:1, itbi:1, isento:false, nota:'Valor integral, sem redução legal de emolumentos. Use para 2ª aquisição, imóvel não residencial ou compra sem financiamento SFH.' }
 };
 
-/* ===== Helpers ===== */
 const BRL = n => n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 function parseBR(str){
   if(!str) return 0;
@@ -333,14 +344,12 @@ function calc(){
   const enq=ENQ[document.getElementById('enquadramento').value];
   document.getElementById('enqNote').textContent=enq.nota;
 
-  // ITBI São Luís: alíquotas vindas de emolumentos.js
   const baseReduzida=Math.min(financiado,EMOL.itbi.tetoFinanciado);
   const baseExcedente=Math.max(financiado-EMOL.itbi.tetoFinanciado,0);
   let itbiFin=baseReduzida*EMOL.itbi.reduzida*enq.itbi;
   let itbiProp=(proprios+baseExcedente)*EMOL.itbi.padrao*enq.itbi;
   const itbiTotal=itbiFin+itbiProp;
 
-  // Cartório
   const cartVenda=emolumento(venda)*enq.emol;
   const cartFin=(financiado>0)?emolumento(financiado)*enq.emol:0;
   const pre=parseBR(document.getElementById('prenotacao').value)*enq.emol;
@@ -352,8 +361,8 @@ function calc(){
 
   const fmt=(v,el)=>{ const e=document.getElementById(el); if(v===0&&enq.isento){e.innerHTML='<span class="isento">Isento</span>';} else {e.textContent=BRL(v);} };
 
-  document.getElementById('itbiFinLbl').textContent=`Parcela financiada · 0,5% (${BRL(baseReduzida)})`;
-  document.getElementById('itbiPropLbl').textContent=`Recursos próprios / à vista · 2% (${BRL(proprios+baseExcedente)})`;
+  document.getElementById('itbiFinLbl').textContent='Parcela financiada · 0,5% ('+BRL(baseReduzida)+')';
+  document.getElementById('itbiPropLbl').textContent='Recursos próprios / à vista · 2% ('+BRL(proprios+baseExcedente)+')';
   fmt(itbiFin,'itbiFin'); fmt(itbiProp,'itbiProp'); fmt(itbiTotal,'itbiTotal');
 
   document.getElementById('cartVenda').textContent=BRL(cartVenda);
@@ -366,28 +375,27 @@ function calc(){
   document.getElementById('cartTotal').textContent=BRL(cartTotal);
   document.getElementById('totalGeral').textContent=BRL(totalGeral);
 
-  last={venda,financiado,itbiTotal,cartTotal,totalGeral,enqKey:document.getElementById('enquadramento').value};
+  last={venda,financiado,itbiTotal,cartTotal,totalGeral};
 }
 calc();
 
 document.getElementById('btnWhats').addEventListener('click',()=>{
   const emp=document.getElementById('empreendimento').value,bloco=document.getElementById('bloco').value,un=document.getElementById('unidade').value,cli=document.getElementById('cliente').value;
   const enqLbl=document.querySelector('#enquadramento option:checked').textContent;
-  let t=`*A&Z Assessoria — Simulação ITBI e Cartório*%0A%0A`;
-  if(cli) t+=`Cliente: ${cli}%0A`;
-  if(emp) t+=`${emp}${bloco?' · '+bloco:''}${un?' · Un. '+un:''}%0A`;
-  t+=`Compra e venda: ${BRL(last.venda)}%0A`;
-  if(last.financiado>0) t+=`Financiado: ${BRL(last.financiado)}%0A`;
-  t+=`${enqLbl}%0A%0A`;
-  t+=`*ITBI:* ${last.itbiTotal===0?'Isento':BRL(last.itbiTotal)}%0A`;
-  t+=`*Cartório:* ${last.cartTotal===0?'Isento':BRL(last.cartTotal)}%0A`;
-  t+=`*TOTAL ESTIMADO: ${BRL(last.totalGeral)}*%0A%0A`;
-  t+=`_Valores de conferência (TJMA 2026 / ITBI São Luís). Sujeitos a alteração._`;
-  window.open(`https://wa.me/?text=${t}`,'_blank');
+  let t='*A&Z Assessoria — Simulação ITBI e Cartório*\n\n';
+  if(cli) t+='Cliente: '+cli+'\n';
+  if(emp) t+=emp+(bloco?' · '+bloco:'')+(un?' · Un. '+un:'')+'\n';
+  t+='Compra e venda: '+BRL(last.venda)+'\n';
+  if(last.financiado>0) t+='Financiado: '+BRL(last.financiado)+'\n';
+  t+=enqLbl+'\n\n';
+  t+='*ITBI:* '+(last.itbiTotal===0?'Isento':BRL(last.itbiTotal))+'\n';
+  t+='*Cartório:* '+(last.cartTotal===0?'Isento':BRL(last.cartTotal))+'\n';
+  t+='*TOTAL ESTIMADO: '+BRL(last.totalGeral)+'*\n\n';
+  t+='_Valores de conferência (TJMA 2026 / ITBI São Luís). Sujeitos a alteração._';
+  window.open('https://wa.me/?text='+encodeURIComponent(t),'_blank');
 });
 document.getElementById('btnPrint').addEventListener('click',()=>window.print());
 
-/* PWA: registra o service worker para permitir instalação e uso offline */
 if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); }); }
 </script>
 </body>
