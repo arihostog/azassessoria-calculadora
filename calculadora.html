@@ -75,8 +75,7 @@
   <div class="wrap">
     <div class="header-row">
     <div class="brand">
-      <!-- A logo real aparece automaticamente quando você salvar o arquivo "logo.png" nesta mesma pasta.
-           Enquanto não houver logo.png, mostra o medalhão vetorial abaixo. -->
+      <!-- A logo real aparece automaticamente quando você salvar o arquivo "logo.png" nesta mesma pasta. -->
       <div class="logo" id="logo">
         <img src="logo.png" alt="A&Z Assessoria" onerror="this.style.display='none';document.getElementById('logoSvg').style.display='block';">
         <svg id="logoSvg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:none;width:100%;height:100%">
@@ -246,9 +245,7 @@
 <!-- Tabela de emolumentos/ITBI em arquivo separado (editar 1x por ano: emolumentos.js) -->
 <script src="emolumentos.js"></script>
 <script>
-/* ===== Tabela de emolumentos vinda de emolumentos.js (TJMA, item 16.3) =====
-   Aplica-se ao registro de compra e venda e ao registro do financiamento (alienação fiduciária).
-   Para atualizar os valores a cada ano, edite o arquivo emolumentos.js. */
+/* ===== Tabela de emolumentos vinda de emolumentos.js (TJMA, item 16.3) ===== */
 var EMOL = window.EMOL || { faixas:[Infinity], totais:[0], prenotacao:43.37, itbi:{reduzida:0.005,padrao:0.02,tetoFinanciado:500000} };
 const FAIXAS = EMOL.faixas;
 const TOTAL16 = EMOL.totais;
@@ -264,7 +261,7 @@ function emolumento(valor){
 const ENQ = {
   primeira:{ emol:0.5, itbi:1, isento:false, nota:'1ª aquisição residencial financiada pelo SFH: emolumentos reduzidos em 50% (art. 290 da Lei 6.015/73). ITBI calculado normalmente.' },
   mcmv1:{ emol:0, itbi:0, isento:true, nota:'MCMV Faixa 1 / interesse social: isenção de ITBI (São Luís) e isenção/redução máxima de emolumentos. Confirme o enquadramento do cliente junto ao agente financeiro e à Prefeitura.' },
-  mcmv23:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 2 e 3: tratado como 1ª aquisição SFH (−50% emolumentos). Conforme a renda, o agente financeiro pode aplicar descontos adicionais de cartório — confirme no contrato.' },
+  mcmv23:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 2 e 3: tratado como 1ª aquisição SFH (-50% emolumentos). Conforme a renda, o agente financeiro pode aplicar descontos adicionais de cartório — confirme no contrato.' },
   integral:{ emol:1, itbi:1, isento:false, nota:'Valor integral, sem redução legal de emolumentos. Use para 2ª aquisição, imóvel não residencial ou compra sem financiamento SFH.' }
 };
 
@@ -329,4 +326,33 @@ function calc(){
   document.getElementById('cartVenda').textContent=BRL(cartVenda);
   document.getElementById('cartFin').textContent=BRL(cartFin);
   document.getElementById('cartFinRow').style.opacity=(financiado>0)?1:.45;
-  document.getElementById('ca
+  document.getElementById('cartPre').textContent=BRL(pre);
+  document.getElementById('cartAverb').textContent=BRL(averb);
+  document.getElementById('cartBaixa').textContent=BRL(baixa);
+  document.getElementById('cartCanc').textContent=BRL(canc);
+  document.getElementById('cartTotal').textContent=BRL(cartTotal);
+  document.getElementById('totalGeral').textContent=BRL(totalGeral);
+
+  last={venda,financiado,itbiTotal,cartTotal,totalGeral,enqKey:document.getElementById('enquadramento').value};
+}
+calc();
+
+document.getElementById('btnWhats').addEventListener('click',()=>{
+  const emp=document.getElementById('empreendimento').value,bloco=document.getElementById('bloco').value,un=document.getElementById('unidade').value,cli=document.getElementById('cliente').value;
+  const enqLbl=document.querySelector('#enquadramento option:checked').textContent;
+  let t=`*A&Z Assessoria — Simulação ITBI e Cartório*%0A%0A`;
+  if(cli) t+=`Cliente: ${cli}%0A`;
+  if(emp) t+=`${emp}${bloco?' · '+bloco:''}${un?' · Un. '+un:''}%0A`;
+  t+=`Compra e venda: ${BRL(last.venda)}%0A`;
+  if(last.financiado>0) t+=`Financiado: ${BRL(last.financiado)}%0A`;
+  t+=`${enqLbl}%0A%0A`;
+  t+=`*ITBI:* ${last.itbiTotal===0?'Isento':BRL(last.itbiTotal)}%0A`;
+  t+=`*Cartório:* ${last.cartTotal===0?'Isento':BRL(last.cartTotal)}%0A`;
+  t+=`*TOTAL ESTIMADO: ${BRL(last.totalGeral)}*%0A%0A`;
+  t+=`_Valores de conferência (TJMA 2026 / ITBI São Luís). Sujeitos a alteração._`;
+  window.open(`https://wa.me/?text=${t}`,'_blank');
+});
+document.getElementById('btnPrint').addEventListener('click',()=>window.print());
+</script>
+</body>
+</html>
