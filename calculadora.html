@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A&Z Assessoria — Calculadora de ITBI e Cartório</title>
 <meta name="description" content="Calculadora de ITBI e custos de cartório (emolumentos TJMA 2026) — A&Z Assessoria.">
+<!-- PWA: instalável na tela inicial do celular -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0c2c4e">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="A&Z Calc">
 <style>
   :root{
     --navy:#0c2c4e;--navy-2:#103a66;--gold:#c9a227;--gold-2:#e0bf4d;
@@ -32,7 +40,20 @@
   .tagline h2{font-size:25px;margin:0;font-weight:700}
   .tagline span{color:var(--gold-2)}
   .tagline p{margin:6px auto 0;color:#cfe0f0;font-size:14px;max-width:600px}
-  @media(max-width:600px){.brand-right{display:none}}
+  @media(max-width:600px){
+    .header-row{flex-direction:column;align-items:center;gap:14px}
+    .brand,.brand-right{justify-content:center}
+    .brand-right{text-align:center;flex-direction:row-reverse}
+    .logo,.logo-pa{width:60px;height:60px;flex-basis:60px}
+    .tagline{margin-top:16px}.tagline h2{font-size:22px}
+  }
+  /* Campos de valor em destaque */
+  .keybox{background:#fff9e9;border:1px solid #f0e2b8;border-left:4px solid var(--gold);border-radius:12px;padding:12px 14px;margin-top:16px}
+  .keybox label{margin-top:0;color:var(--navy);font-size:13px;font-weight:700}
+  input.keyfield{font-size:19px;font-weight:700;color:var(--navy);border:2px solid var(--gold);background:#fff;padding:13px 14px;margin-top:6px}
+  input.keyfield:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.25)}
+  .install-hint{display:none;font-size:12.5px;color:var(--navy);background:var(--soft);border:1px dashed var(--gold);border-radius:11px;padding:11px 13px;margin:14px 0 0;text-align:center}
+  @media(max-width:860px){.install-hint{display:block}}
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:-18px 0 30px;position:relative;z-index:3}
   @media(max-width:860px){.grid{grid-template-columns:1fr}}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
@@ -144,8 +165,10 @@
       <label>Cliente <span class="hint">(opcional)</span></label>
       <input id="cliente" type="text" placeholder="Nome do cliente">
 
-      <label>Valor de compra e venda (R$)</label>
-      <input id="valorVenda" type="text" inputmode="decimal" placeholder="160.000,00">
+      <div class="keybox">
+        <label>💰 Valor de compra e venda (R$)</label>
+        <input id="valorVenda" class="keyfield" type="text" inputmode="decimal" placeholder="160.000,00">
+      </div>
 
       <label>Forma de pagamento</label>
       <div class="toggle" id="tipoFin">
@@ -154,15 +177,19 @@
       </div>
 
       <div id="financBlock">
-        <label>Valor financiado (R$)</label>
-        <input id="valorFinanciado" type="text" inputmode="decimal" placeholder="80.000,00">
+        <div class="keybox">
+          <label>🏦 Valor financiado (R$)</label>
+          <input id="valorFinanciado" class="keyfield" type="text" inputmode="decimal" placeholder="80.000,00">
+        </div>
       </div>
 
       <label>Enquadramento</label>
       <select id="enquadramento">
         <option value="primeira">1ª Aquisição — SFH (−50% emolumentos)</option>
-        <option value="mcmv1">Minha Casa Minha Vida — Faixa 1 / Interesse Social</option>
-        <option value="mcmv23">Minha Casa Minha Vida — Faixa 2 e 3</option>
+        <option value="faixa1">MCMV Faixa 1 — Interesse Social (renda até R$ 3.200)</option>
+        <option value="faixa2">MCMV Faixa 2 (renda até R$ 5.000)</option>
+        <option value="faixa3">MCMV Faixa 3 (renda até R$ 9.600 · imóvel até R$ 400 mil)</option>
+        <option value="faixa4">MCMV Faixa 4 — Classe Média (renda até R$ 13.000 · imóvel até R$ 600 mil)</option>
         <option value="integral">Valor integral (sem redução)</option>
       </select>
       <div class="note" id="enqNote"></div>
@@ -230,6 +257,10 @@
   </div>
 </div>
 
+<div class="wrap">
+  <div class="install-hint">📲 No celular? Salve como app: <b>iPhone</b> → toque em Compartilhar e em "Adicionar à Tela de Início". <b>Android</b> → menu ⋮ e "Instalar app".</div>
+</div>
+
 <footer>
   <b>A&amp;Z Assessoria</b> — Empréstimos Consignados · Financiamento de Imóveis · Assessoria Previdenciária<br>
   <b>PA Costa e Serviços</b> — Crédito Imobiliário<br>
@@ -260,8 +291,10 @@ function emolumento(valor){
 /* ===== Enquadramentos ===== */
 const ENQ = {
   primeira:{ emol:0.5, itbi:1, isento:false, nota:'1ª aquisição residencial financiada pelo SFH: emolumentos reduzidos em 50% (art. 290 da Lei 6.015/73). ITBI calculado normalmente.' },
-  mcmv1:{ emol:0, itbi:0, isento:true, nota:'MCMV Faixa 1 / interesse social: isenção de ITBI (São Luís) e isenção/redução máxima de emolumentos. Confirme o enquadramento do cliente junto ao agente financeiro e à Prefeitura.' },
-  mcmv23:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 2 e 3: tratado como 1ª aquisição SFH (-50% emolumentos). Conforme a renda, o agente financeiro pode aplicar descontos adicionais de cartório — confirme no contrato.' },
+  faixa1:{ emol:0, itbi:0, isento:true, nota:'MCMV Faixa 1 (renda até R$ 3.200) — interesse social: isenção de ITBI em São Luís e isenção/redução máxima de emolumentos. Confirme o enquadramento junto ao agente financeiro e à Prefeitura.' },
+  faixa2:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 2 (renda até R$ 5.000): tratado como 1ª aquisição SFH — emolumentos −50% e ITBI normal. Confirme descontos adicionais no contrato.' },
+  faixa3:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 3 (renda até R$ 9.600 · imóvel até R$ 400 mil): 1ª aquisição SFH — emolumentos −50% e ITBI normal.' },
+  faixa4:{ emol:0.5, itbi:1, isento:false, nota:'MCMV Faixa 4 / Classe Média (renda de R$ 9.600,01 a R$ 13.000 · imóvel até R$ 600 mil, sem subsídio): financiamento diferenciado. Em geral emolumentos −50% (1ª aquisição) e ITBI normal — confirme a forma de financiamento (SFH/SBPE) no contrato.' },
   integral:{ emol:1, itbi:1, isento:false, nota:'Valor integral, sem redução legal de emolumentos. Use para 2ª aquisição, imóvel não residencial ou compra sem financiamento SFH.' }
 };
 
@@ -353,6 +386,9 @@ document.getElementById('btnWhats').addEventListener('click',()=>{
   window.open(`https://wa.me/?text=${t}`,'_blank');
 });
 document.getElementById('btnPrint').addEventListener('click',()=>window.print());
+
+/* PWA: registra o service worker para permitir instalação e uso offline */
+if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); }); }
 </script>
 </body>
 </html>
