@@ -1,7 +1,9 @@
-/* Service Worker — A&Z Calculadora.
+/* Service Worker — A&Z (Calculadora + Vendas de Bebidas).
    HTML = network-first (sempre pega a versao mais nova quando online).
-   Arquivos estaticos = cache-first (carrega rapido e funciona offline). */
-const CACHE = 'azcalc-v3';
+   Arquivos estaticos = cache-first (carrega rapido e funciona offline).
+   v4: cada pagina e guardada no cache pelo proprio endereco (corrige conflito
+   entre /calculadora e /vendas no modo offline). */
+const CACHE = 'azcalc-v4';
 const ASSETS = [
   '/calculadora',
   '/emolumentos.js',
@@ -10,10 +12,16 @@ const ASSETS = [
   '/icon-192.png',
   '/icon-512.png',
   '/apple-touch-icon.png',
-  '/manifest.json'
+  '/manifest.json',
+  '/vendas',
+  '/vendas-manifest.json'
 ];
 self.addEventListener('install', function (e) {
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ASSETS); }).then(function () { return self.skipWaiting(); }));
+  e.waitUntil(
+    caches.open(CACHE).then(function (c) {
+      return Promise.all(ASSETS.map(function (a) { return c.add(a).catch(function () {}); }));
+    }).then(function () { return self.skipWaiting(); })
+  );
 });
 self.addEventListener('activate', function (e) {
   e.waitUntil(
@@ -28,9 +36,13 @@ self.addEventListener('fetch', function (e) {
     e.respondWith(
       fetch(e.request).then(function (resp) {
         var copy = resp.clone();
-        caches.open(CACHE).then(function (c) { c.put('/calculadora', copy); });
+        caches.open(CACHE).then(function (c) { c.put(e.request, copy); });
         return resp;
-      }).catch(function () { return caches.match('/calculadora'); })
+      }).catch(function () {
+        return caches.match(e.request, { ignoreSearch: true }).then(function (m) {
+          return m || caches.match('/calculadora');
+        });
+      })
     );
     return;
   }
