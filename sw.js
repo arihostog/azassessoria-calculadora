@@ -3,7 +3,7 @@
    Arquivos estaticos = cache-first (carrega rapido e funciona offline).
    v4: cada pagina e guardada no cache pelo proprio endereco (corrige conflito
    entre /calculadora e /vendas no modo offline). */
-const CACHE = 'azcalc-v4';
+const CACHE = 'azcalc-v5';
 const ASSETS = [
   '/calculadora',
   '/emolumentos.js',
@@ -13,7 +13,7 @@ const ASSETS = [
   '/icon-512.png',
   '/apple-touch-icon.png',
   '/manifest.json',
-  '/vendas',
+  '/vendas-de-bebidas',
   '/vendas-manifest.json'
 ];
 self.addEventListener('install', function (e) {

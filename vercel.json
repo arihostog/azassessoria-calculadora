@@ -3,7 +3,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/", "destination": "/calculadora", "permanent": false }
+    { "source": "/", "destination": "/calculadora", "permanent": false },
+    { "source": "/vendas", "destination": "/vendas-de-bebidas", "permanent": false }
   ],
   "headers": [
     {
